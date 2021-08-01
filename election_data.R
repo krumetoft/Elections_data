@@ -1,4 +1,8 @@
 library(tidyverse)
+library(ggbiplot)
+library(plotly)
+#library(devtools)
+#install_github("vqv/ggbiplot")
 
 #Making sure the output in console is readable
 Sys.setlocale("LC_CTYPE", "bulgarian")
@@ -87,15 +91,46 @@ votes %>%
   scale_x_continuous()+
   coord_flip()
 
-votes %>% 
-  group_by(section_code , party_index) %>% 
-  summarize(sum_votes = sum(votes_count, na.rm = TRUE)) %>% 
-#  mutate(percent_votes = sum_votes/sum(sum_votes, na.rm = TRUE)) %>% 
-  pivot_wider(names_from = party_index, values_from = sum_votes) %>% 
-  View()
+ votes_by_section <- votes %>% 
+                       group_by(section_code , party_index) %>% 
+                       summarize(sum_votes = sum(votes_count, na.rm = TRUE)) %>% 
+                     #  mutate(percent_votes = sum_votes/sum(sum_votes, na.rm = TRUE)) %>% 
+                       pivot_wider(names_from = party_index, values_from = sum_votes) %>% 
+                       tail(-4) %>% 
+                       select(-one_of(c('NA')))
+
+ votes_by_section %>% 
+   mutate(sum = rowSums(across(where(is.numeric))))
+
+ perc_votes_by_section <-  votes %>% 
+                       group_by(section_code , party_index) %>% 
+                       summarize(sum_votes = sum(votes_count, na.rm = TRUE)) %>% 
+                       mutate(perc_votes = sum_votes / sum(sum_votes))  %>% 
+                       select(-one_of(c('sum_votes'))) %>%
+                       pivot_wider(names_from = party_index, values_from = perc_votes) %>% 
+                       tail(-4) %>% 
+                       select(-one_of(c('NA')))
 
 
+ 
+ perc_votes_by_section %>% 
+   ungroup() %>% 
+   select(-section_code) %>% 
+   prcomp(center = TRUE,scale. = TRUE) %>% 
+   ggbiplot(ellipse=TRUE, alpha = 0.05, labels = c(perc_votes_by_section$section_code)) %>% 
+   ggplotly()
+ 
 
+ 
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
 
 votes <- read.delim(votes_link, 
            sep=";", 
