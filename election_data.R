@@ -5,7 +5,7 @@ library(plotly)
 #install_github("vqv/ggbiplot")
 
 #Making sure the output in console is readable
-Sys.setlocale("LC_CTYPE", "bulgarian")
+#Sys.setlocale("LC_CTYPE", "bulgarian")
 
 #Links to files
 parties_link <-'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_july/cik_parties_11.07.2021.txt'
@@ -64,7 +64,7 @@ finalize_votes_df <- function(votes_link, parties_df){
   datalist <- list()
   
   for (party_ix in seq_along(parties_df$party_name)) {
-    temp_df <- extract_votes_per_party(test, parties_df$party_name[party_ix])
+    temp_df <- extract_votes_per_party(raw_df, parties_df$party_name[party_ix])
     datalist[[party_ix]] <- temp_df
   }
   
