@@ -20,6 +20,7 @@ sections <- read_sections_table(sections_link)
 parties <- read_parties_table(parties_link)
 votes <- finalize_votes_df(votes_link, parties)
 
+
 --------------------------------
 votes %>% 
   group_by(party_index) %>% 
