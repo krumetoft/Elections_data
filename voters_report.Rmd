@@ -87,19 +87,19 @@ votes_april %>%
 ```
 
 ```{r}
-t <- read_prep_votes_table(votes_link, parties, elections='april')
+t <- read_prep_votes_table(votes_link_april, parties_april, elections='april')
 
-party <- parties$party_name[1]
+party <- parties_april$party_name[1]
 party
 
-t %>% 
-  select(contains(party)) %>% 
-  rename(party_index := !!party) %>% 
-  rename(votes_count := !!paste(party, "_votes", sep='')) 
-  # rename(party_index := !!party) %>% 
-  # rename(votes_count := !!paste(party, "_votes", sep='')) 
-
- t %>% head() %>% View()
+# t %>% 
+#   select(contains(party)) %>% 
+#   rename(party_index := !!party) %>% 
+#   rename(votes_count := !!paste(party, "_votes", sep='')) 
+#   # rename(party_index := !!party) %>% 
+#   # rename(votes_count := !!paste(party, "_votes", sep='')) 
+# 
+#  t %>% head() %>% View()
 # party <- parties$party_name[1]
 # party
 # 
