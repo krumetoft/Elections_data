@@ -16,60 +16,73 @@ source("utils.R")
 
 ```{r}
 #Links to files
-parties_link <-'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_july/cik_parties_11.07.2021.txt'
-sections_link <- 'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_july/sections_11.07.2021.txt'
-votes_link <- "https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_july/votes_11.07.2021.txt"
+parties_link_july <-'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_july/cik_parties_11.07.2021.txt'
+sections_link_july <- 'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_july/sections_11.07.2021.txt'
+votes_link_july <- "https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_july/votes_11.07.2021.txt"
 elections <- 'july'
 
 #Read Sections, Parties and Votes
-sections <- read_sections_table(sections_link)
-parties <- read_parties_table(parties_link)
-votes <- finalize_votes_df(votes_link, parties, elections)
+sections_july <- read_sections_table(sections_link_july)
+parties_july <- read_parties_table(parties_link_july)
+votes_july  <- finalize_votes_df(votes_link_july, parties_july, elections)
 ```
 
 Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
 ```{r}
-votes %>% 
+votes_july %>% 
   group_by(party_index) %>% 
   summarize(sum_votes = sum(votes_count, na.rm = TRUE)) %>% 
   arrange(desc(sum_votes)) %>% 
-  left_join(parties, by = "party_index") %>% # Any better way of mapping an index to party? 
+  left_join(parties_july, by = "party_index") %>% # Any better way of mapping an index to party? 
   select(party_index, party_name, sum_votes) %>% 
   pander() #Just more readable printout of the table
 
 ```
 
+```{r}
+parties_july %>% pander()
+```
 
 
 ```{r}
-votes %>% 
+votes_july %>% 
   group_by(party_index) %>% 
   summarize(sum_votes = sum(votes_count, na.rm = TRUE)) %>% 
   arrange(desc(sum_votes)) %>% 
-  left_join(parties, by = "party_index") %>% # Any better way of mapping an index to party? 
-  select(party_index, party_name, sum_votes) %>% 
-  ggplot(mapping = aes(x=party_name, y=sum_votes)) +
+  left_join(parties_july, by = "party_index") %>% # Any better way of mapping an index to party? 
+  select(party_index, party_name, party_alias, sum_votes) %>% 
+  ggplot(mapping = aes(x=party_alias, y=sum_votes)) +
   geom_bar(stat='identity') +
-  geom_text(aes(label = sum_votes)) +
+#  geom_text(aes(label = sum_votes)) +
 #  scale_x_discrete(breaks = seq(1:23), labels = seq(1:23)) +
   coord_flip() 
  # theme(legend.position = 'none')
 ```
 ```{r}
 #Links to files
-parties_link <-'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_april/cik_parties_04.04.2021.txt'
-sections_link <- 'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_april/sections_04.04.2021.txt'
-votes_link <- "https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_april/votes_04.04.2021.txt"
+parties_link_april <-'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_april/cik_parties_04.04.2021.txt'
+sections_link_april <- 'https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_april/sections_04.04.2021.txt'
+votes_link_april <- "https://raw.githubusercontent.com/krumeto/Elections_data/main/elections/elections_2021_april/votes_04.04.2021.txt"
 
 elections <- 'april'
 
 #Read Sections, Parties and Votes
-sections <- read_sections_table(sections_link)
-parties <- read_parties_table(parties_link)
-votes <- finalize_votes_df(votes_link, parties, elections)
+sections_april <- read_sections_table(sections_link_april)
+parties_april <- read_parties_table(parties_link_april)
+votes_april <- finalize_votes_df(votes_link_april, parties_april, elections)
 
+
+```
+```{r}
+votes_april %>% 
+  group_by(party_index) %>% 
+  summarize(sum_votes = sum(votes_count, na.rm = TRUE)) %>% 
+  arrange(desc(sum_votes)) %>% 
+  left_join(parties_july, by = "party_index") %>% # Any better way of mapping an index to party? 
+  select(party_index, party_name, sum_votes) %>% 
+  pander() #Just more readable printout of the table
 
 ```
 

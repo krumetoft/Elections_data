@@ -2,12 +2,21 @@ library(tidyverse)
 
 #functions
 read_parties_table <- function(link_to_file){
-  read.delim(link_to_file, 
+  parties <- read.delim(link_to_file, 
              sep=";", 
              encoding = "UTF-8",
              header = FALSE,
              col.names = c('party_index', 'party_name')
-  )
+             )
+  
+  parties %>% 
+    mutate(party_alias = case_when(grepl("ГЕРБ", party_name) ~ "GERB", 
+                                   grepl("ИМА ТАКЪВ НАРОД", party_name)  ~ "IMA TAKUV NAROD", 
+                                   grepl("ДЕМОКРАТИЧНА БЪЛГАРИЯ", party_name)  ~ "DB", 
+                                   grepl("ИЗПРАВИ СЕ", party_name)  ~ "IZPRAVI SE", 
+                                   grepl("ДПС", party_name)  ~ "DPS",
+                                   TRUE ~ 'OTHER'
+                                   ))
 }
 
 read_sections_table <- function(link_to_file){
@@ -42,19 +51,24 @@ read_prep_votes_2021_April<- function(link_to_file, party_df){
                       encoding = "UTF-8",
                       header = FALSE
   )
+  
+  votes <- votes[,-4]
+  
   names(votes)[1] <- 'section_code'
   names(votes)[2] <- 'identificator_administrative_entity'
   
-  party_name_col_numbers <- seq(3,126,4)
-  party_total_votes_col_numbers <- seq(4,126,4)
-  party_votes_paper_col_numbers <- seq(5,126,4)
-  party_votes_machines_col_numbers <- seq(6,126,4)
+  party_name_col_numbers <- seq(3,122,4)
+  party_total_votes_col_numbers <- seq(4,122,4)
+  party_votes_paper_col_numbers <- seq(5,122,4)
+  party_votes_machines_col_numbers <- seq(6,122,4)
   
   
   names(votes)[grepl("V", names(votes)) & parse_number(names(votes)) %in% party_name_col_numbers] <- party_df$party_name
   names(votes)[grepl("V", names(votes)) & parse_number(names(votes)) %in% party_total_votes_col_numbers] <- paste(party_df$party_name, "_votes", sep='')
   names(votes)[grepl("V", names(votes)) & parse_number(names(votes)) %in% party_votes_paper_col_numbers] <- paste(party_df$party_name, "_paper_votes", sep='')
   names(votes)[grepl("V", names(votes)) & parse_number(names(votes)) %in% party_votes_machines_col_numbers] <- paste(party_df$party_name, "_machine_votes", sep='')
+  
+  
   
   votes
 }
